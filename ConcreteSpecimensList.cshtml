@@ -1,0 +1,168 @@
+﻿@model BusinessLayer.Entity.Concrete_List
+@{
+    ViewBag.Title = "ConcreteSpecimensList";
+    Layout = "~/Views/Shared/_MainDashboard.cshtml";
+}
+
+@using (Html.BeginForm("ConcreteSpecimensList", "Concrete", FormMethod.Post, new { @id = "frmConcreteSpecimensList", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    Html.RenderPartial("_Alerts");
+
+    <div class="pd-20 card-box mb-30">
+
+        <div class="form-group row">
+            <label class="col-sm-12 col-md-2 col-form-label">Test From Date</label>
+            <div class="col-sm-12 col-md-4">
+                @Html.TextBoxFor(x => x.From_DT, new { @class = "form-control date-picker", @id = "txtFromDT", @autocomplete = "off", @data_placeholder = "Select Test From Date", @readOnly = true })
+
+                <span id="spnErr_txtFromDT" class="field-validation-error"></span>
+            </div>
+            <label class="col-sm-12 col-md-2 col-form-label">Test To Date</label>
+            <div class="col-sm-12 col-md-4">
+                @Html.TextBoxFor(x => x.To_DT, new { @class = "form-control date-picker", @id = "txtToDT", @autocomplete = "off", @data_placeholder = "Select Test To Date", @readOnly = true })
+
+                <span id="spnErr_txtToDT" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-12" style="padding-top: 5px; padding-bottom: 15px; padding-right: 13px; text-align: center;">
+                <input type="submit" class="btn btn-success" value="Search" name="Search" style="width:auto;" id="btnSubmit" />
+                <input type="button" class="btn btn-dark" value="Add New" name="Add" style="width:auto;" id="btnAdd" />
+                <input type="reset" class="btn btn-danger" value="Reset" style="width:auto;" id="btnReset" />
+            </div>
+            @Html.HiddenFor(x => x.Test_ID)
+        </div>
+        <div id="divPartial" style="display:none"></div>
+    </div>
+      <div class="modal fade bs-example-modal-lg" id="model-Sheet-dtl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="width:100%;">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myLargeModalLabel">Concrete Specimen List List</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+              
+                <div class="modal-body" style="height: 500px; max-height: 500px; overflow: auto;">
+                    <div id="divPartialModel"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+}
+<script src="~/assets/js/jquery-2.1.4.min.js"></script>
+<script src="~/Scripts/Custom/customValidation.js"></script>
+
+<style>
+    .modal-dialog {
+        max-width: 1200px;
+        margin: 1.75rem auto;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+
+        $("#btnAdd").on("click", function () {
+            var url = '@Url.Action("ConcreteSpecimensEntry", "Concrete")';
+            window.location.href = url;
+        });
+
+        $("#btnReset").on("click", function () {
+
+            var url = '@Url.Action("ConcreteSpecimensList", "Concrete")';
+            window.location.href = url;
+        });
+
+        $(".date-picker").datepicker({
+            language: 'en',
+            autoClose: true,
+            dateFormat: 'dd MM yyyy'
+
+        });
+
+        $('.datetimepicker').datepicker({
+            onSelect: function (selectedDate) {
+                ValidateMinMax_Date();
+            }
+        });
+
+        function ValidateMinMax_Date() {
+            var errCnt = 0;
+            if ($('#txtFromDT').val() == '') {
+                $('#spnErr_txtFromDT').text('Select From Date').show();
+                errCnt = errCnt + 1;
+            }
+            else {
+                $('#spnErr_txtFromDT').text('').hide();
+            }
+
+            if ($('#txtToDT').val() == '') {
+                $('#spnErr_txtToDT').text('Select To Date').show();
+                errCnt = errCnt + 1;
+            }
+            else {
+                $('#spnErr_txtToDT').text('').hide();
+            }
+
+            if (errCnt == 0) {
+                var fDate = $('#txtFromDT').val();
+                var tDate = $('#txtToDT').val();
+
+                if (Date.parse(fDate) > Date.parse(tDate)) {
+                    $('#txtToDT').val('');
+                    $('#lblMsg').text('To date should be greater than or equal to from date');
+                    $('#alert-modal').modal('show');
+                }
+            }
+        }
+
+
+        $("#frmConcreteSpecimensList").submit(function (e) {
+            List(e);
+            e.preventDefault();
+        });
+
+        function List(e) {
+            $("#divPartial").empty();
+
+
+            if ($('#txtFromDT').val() == '') {
+                $('#spnErr_txtFromDT').text('Select From Date').show();
+                return false;
+            }
+            else {
+                $('#spnErr_txtFromDT').text('').hide();
+            }
+
+            if ($('#txtToDT').val() == '') {
+                $('#spnErr_txtToDT').text('Select To Date').show();
+                return false;
+            }
+            else {
+                $('#spnErr_txtToDT').text('').hide();
+            }
+
+            if ($("#txtFromDT").val() != "" && $("#txtToDT").val() != "") {
+                if (CheckSession(e) == 1) {
+                    $("#divPartial").load("_ConcreteSpecimensList/Concrete");
+                    $("#divPartial").css("display", "block");
+                }
+            }
+            else {
+                $("#divPartial").empty();
+            }
+        }
+
+        List(er);
+
+
+    });
+
+
+</script>
+

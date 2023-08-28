@@ -1,0 +1,165 @@
+﻿<div class="card-box mb-30" style="padding:10px;">
+
+    <div class="table-responsive">
+        <table class="data-table table stripe hover nowrap" id="tbConcreteList" style="width: 100%; white-space: nowrap; font-size: 8.0pt">
+            <thead>
+                <tr>
+                    <th class="text-center max-desktop"></th>
+                    <th class="text-center max-desktop">Test ID</th>
+                    <th class="text-center max-desktop">Test No</th>
+                    <th class="text-center max-desktop">Temp Of Dry Bulb</th>
+                    <th class="text-center max-desktop">Temp Of Wet Bulb</th>
+                    <th class="text-center max-desktop">Date And Time Of Testing</th>
+                    <th class="text-center max-desktop">No Of Test</th>
+                    </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div style="display:none;" id="div_ToPrint">
+</div>
+
+<!-- js -->
+
+<script src="~/src/plugins/datatables/js/jquery.dataTables.min.js"></script>
+<script src="~/src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/src/plugins/datatables/js/dataTables.responsive.min.js"></script>
+<script src="~/src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
+<!-- buttons for Export datatable -->
+<script src="~/src/plugins/datatables/js/dataTables.buttons.min.js"></script>
+<script src="~/src/plugins/datatables/js/buttons.bootstrap4.min.js"></script>
+<script src="~/src/plugins/datatables/js/buttons.print.min.js"></script>
+<script src="~/src/plugins/datatables/js/buttons.html5.min.js"></script>
+<script src="~/src/plugins/datatables/js/buttons.flash.min.js"></script>
+<script src="~/src/plugins/datatables/js/pdfmake.min.js"></script>
+<script src="~/src/plugins/datatables/js/vfs_fonts.js"></script>
+<!-- Datatable Setting js -->
+<script src="~/vendors/scripts/datatable-setting.js"></script>
+
+
+<style>
+    .dataTable > thead > tr > th[class*="sort"]:before,
+    .dataTable > thead > tr > th[class*="sort"]:after {
+        content: "" !important;
+    }
+
+    .DataTables_sort_icon, .css_right, .ui-icon, .ui-icon-caret-2-n-s {
+        display: none !important;
+    }
+
+    .dataTables_processing {
+        z-index: 3000;
+    }
+
+    .table td, .table th {
+        padding: 0.25rem;
+        vertical-align: top;
+        border: 1px solid #dee2e6;
+    }
+
+    .table th {
+        background-color: #aab2ba;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+
+        var table = $('#tbConcreteList').DataTable({
+            destroy: true,
+            "ajax": {
+                "url": "../Concrete/_ConcreteSpecimens_Data_List",
+                "type": "POST",
+                "data": function (d) {
+                    d.fDate = $("#txtFromDT").val();
+                    d.tDate = $("#txtToDT").val();
+
+                },
+                "datatype": "json"
+            },
+            "columns": [
+
+
+                {
+                    "data": "SAMPLE_COUNT",
+                    className: "center",
+                    "render": function (data, type, row, meta) {
+                        if (data == "1") {
+                          //  data = '<span style="cursor:pointer;font-size:20px;padding-right:10px;"class="fa fa-eye"id="spnView_"' + row.Test_ID + '"></span>'
+                            data = '<span style="cursor:pointer;font-size:20px;padding-right:10px;color:maroon;" class="fa fa-pencil" id="spnEdit_"' + row.Test_ID + '"></span>'
+                        } else {
+
+                            data = '<span style="cursor:pointer;font-size:20px;padding-right:10px;"class="fa fa-eye"id="spnView_"' + row.SAMPLE_COUNT + '"></span>'
+                        }
+                        return data;
+                    }
+                },
+             
+                { "data": "Test_ID", "name": "Test_ID" },
+                {
+                    "data": "Test_No", "name": "Test_No", "className": "text-center"
+                    , fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                        $(nTd).html("<span class='text-primary'>" + oData.Test_No + "</span>");
+                    }
+                },
+                       { "data": "Dry_Bulb", "name": "Dry_Bulb", "className": "text-center" },
+                       { "data": "Wet_Bulb", "name": "Wet_Bulb", "className": "text-center" },
+                       { "data": "Date_Test", "name": "Date_Test", "className": "text-center" },
+                       { "data": "SAMPLE_COUNT", "name": "SAMPLE_COUNT", "className": "text-center" },
+
+            ]
+           ,
+            "columnDefs": [
+                {
+                    className: "Test_ID",
+                    "targets": [1],
+                    "visible": false,
+                    "searchable": false
+                }
+            ],
+            "serverSide": "true",
+            "order": [0, "asc"],
+            "processing": "true",
+            "language": {
+                "processing": '<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only">Loading...</span>',
+            },
+            "oLanguage": {
+                "sSearch": "Quick Search:"
+            },
+            responsive: true
+
+        });
+
+     
+
+        $('#tbConcreteList tbody').on('click', '[id*=spnEdit_]', function (e) {
+            if (CheckSession(e) == 1) {
+                var data = table.row($(this).parent()).data();
+                var Test_ID = data['Test_ID'];
+                var data = { Test_ID: Test_ID };
+                var url = '@Url.Action("ConcreteSpecimenEdit", "Concrete")' + '?Test_ID=' + Test_ID;
+                window.location.href = url;
+            }
+        });
+
+        $('#tbConcreteList tbody').on('click', '[id*=spnView_]', function (e) {
+            if (CheckSession(e) == 1) {
+                var data = table.row($(this).parent()).data();
+                var Test_ID = data['Test_ID'];
+
+                if (parseInt(Test_ID) > 0) {
+                    $('#model-Sheet-dtl').modal('show');
+                    $("#divPartialModel").load("ConcreteSpecimenView/Concrete", { Test_ID: Test_ID });
+                    $('#divPartialModel').slideDown('slow');
+                }
+
+                var Test_No = data['Test_No'];
+                $('#spnTest_No').text(Test_No)
+            }
+        });
+
+
+
+    });
+</script>

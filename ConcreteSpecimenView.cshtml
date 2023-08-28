@@ -1,0 +1,172 @@
+﻿@model BusinessLayer.Entity.Concrete_Specimen
+
+
+<style>
+    .form-group > label {
+        font-weight: 800;
+    }
+</style>
+
+
+<link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+
+
+    <div class="card-box mb-30" style="padding:10px;">
+        <div class="form-group row">
+            <label class="col-sm-12 col-md-2">Test Number</label>
+            <div class="col-sm-12 col-md-4">
+                :  <span id="spnTest_No" style="color: red;font-weight:bold;">@Model.Test_No</span>    </div>
+
+            <label class="col-sm-12 col-md-2">Testing Date & Time:</label>
+            <div class="col-sm-12 col-md-4">
+                @Model.TestDateTime
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-12 col-md-2">Temp Of Dry Bulb:</label>
+            <div class="col-sm-12 col-md-4">
+             @Model.DryBulb
+            </div>
+            <label class="col-sm-12 col-md-2"> Temp Of Wet Bulb:</label>
+            <div class="col-sm-12 col-md-4">
+                @Model.WetBulb
+            </div>
+        </div>
+        @*<div class="form-group row">
+         
+        </div>*@
+        <div class="form-group row">
+            <div class="table-responsive">
+                <table class="table table-bordered" style="font-size: 9px; padding: 0px; margin: 0px; width: 3000px;" id="tblRemarksList">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="width:50px;text-align:center;">Sr. No.</th>
+                            <th rowspan="2" style="width:800px;text-align:center;">Client</th>
+                            <th rowspan="2" style="width:300px;text-align: center;">Id Mark</th>
+                            <th colspan="3" style="width:900px;text-align: center;">Dimension</th>
+                            <th rowspan="2" style="width:600px;text-align:center;">Date Of<br /> Casting</th>
+                            <th rowspan="2" style="width:300px;text-align:center;">Age at<br />Test<br />(days)</th>
+                            <th rowspan="2" style="width:400px;text-align:center;">Concrete<br />grade</th>
+                            <th rowspan="2" style="width:400px;text-align:center;">Weight<br />Kgs</th>
+                            <th rowspan="2" style="width:400px;text-align:center;">Crushing<br />Load.kN</th>
+                            <th rowspan="2" style="width:400px;text-align:center;">Compressive<br />strength,Mpa</th>
+                            <th rowspan="2" style="width:400px;text-align:center;">Average<br />Compressive<br />Strength,Mpa</th>
+                            <th rowspan="2" style="width:700px;text-align: center;">Remarks</th>
+                            <th rowspan="2" style="text-align:center;"></th>
+                        </tr>
+                        <tr>
+                            <th style="width:300px;text-align:center;">L</th>
+                            <th style="width:300px;text-align:center;">B</th>
+                            <th style="width:300px;text-align:center;">H</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyRemarksList">
+                        @for (int i = 0; i < Model.Concrete_Specimen_Dtl_List.Count(); i++)
+                        {
+
+                            <tr id="tr_@i">
+                                <td data-title="Sr.No." style="text-align: center; padding-top: 17px;">
+                                    <span id="spnSrNo_@i"> @(i + 1) </span>
+                                </td>
+                                <td data-title="Client">                                   
+                                    @Html.TextBoxFor(x => x.Concrete_Specimen_Dtl_List[i].Client, new { @class = "form-control", @autocomplete = "off", @data_placeholder = "Insert Client" , @readonly=true})
+                                  </td>
+                                <td data-title="Id Mark">
+                                     @Html.TextBoxFor(x => x.Concrete_Specimen_Dtl_List[i].Id_Mark, new { @class = "form-control numeric", @autocomplete = "off", @data_placeholder = "Insert Mark ID", @readonly = true})
+                                 </td>
+                                <td data-title="L">
+                                    @Html.TextBoxFor(x => x.Concrete_Specimen_Dtl_List[i].Dimension_L, new { @class = "form-control numeric", @autocomplete = "off", @data_placeholder = "Insert Dimension L", @readonly = true })
+                                 </td>
+                                <td data-title="B">
+                                    @Html.TextBoxFor(x => x.Concrete_Specimen_Dtl_List[i].Dimension_B, new { @class = "form-control numeric", @autocomplete = "off", @data_placeholder = "Insert Dimension B", @readonly = true})
+                                </td>
+                                <td data-title="H">
+                                    @Html.TextBoxFor(x => x.Concrete_Specimen_Dtl_List[i].Dimension_H, new { @class = "form-control numeric", @autocomplete = "off", @data_placeholder = "Insert Dimension H", @readonly = true })
+                                </td>
+                                <td data-title="Date Of Casting">
+                                    @Html.TextBoxFor(x => x.Concrete_Specimen_Dtl_List[i].Date_Of_Casting, new { @class = "form-control datetimepicker", @autocomplete = "off", @data_placeholder = "Insert Casting Date", @readonly = true })
+                                 </td>
+                                <td data-title="Age at Test days">
+                                    @Html.TextBoxFor(x => x.Concrete_Specimen_Dtl_List[i].Age_Test, new { @class = "form-control numeric", @autocomplete = "off", @data_placeholder = "Insert Test Age", @readonly = true })
+                                 </td>
+                                <td data-title="Concrete grade">
+                                    @Html.TextBoxFor(x => x.Concrete_Specimen_Dtl_List[i].Grade_Id, new { @class = "form-control", @autocomplete = "off", @data_placeholder = "Insert Concrete Grade", @readonly = true })
+                                  </td>
+                                <td data-title="Weight Kgs">
+                                    @Html.TextBoxFor(x => x.Concrete_Specimen_Dtl_List[i].Weight, new { @class = "form-control numeric", @autocomplete = "off", @data_placeholder = "Insert Weight", @readonly = true })
+                                   </td>
+                                <td data-title="Crushing Load.kN">
+                                    @Html.TextBoxFor(x => x.Concrete_Specimen_Dtl_List[i].Crushing_Load, new { @class = "form-control numeric", @autocomplete = "off", @data_placeholder = "Insert Crushing Load", @readonly = true })
+                                  </td>
+                                <td data-title="Compressive strength, Mpa">
+                                    @Html.TextBoxFor(x => x.Concrete_Specimen_Dtl_List[i].Compressive_Strength, new { @class = "form-control numeric", @autocomplete = "off", @data_placeholder = "Insert Compressive Strength", @readonly = true })
+                                 </td>  
+                                <td data-title="Average Compressive strength, Mpa">
+                                    @Html.TextBoxFor(x => x.Concrete_Specimen_Dtl_List[i].AVG_Compressive_Strength, new { @class = "form-control numeric", @autocomplete = "off", @data_placeholder = "Insert Average Compressive Strength", @readonly = true })
+                                 </td>
+                                <td data-title="Remarks">
+                                    @Html.TextBoxFor(x => x.Concrete_Specimen_Dtl_List[i].Remarks, new { @class = "form-control", @autocomplete = "off", @data_placeholder = "Insert Remarks", @readonly = true })
+                                  </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+            @Html.HiddenFor(x => x.Test_ID)
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-12 col-md-2 col-form-label">Upload Test Report</label>
+            <div class="col-sm-12 col-md-10">
+                @Html.TextBoxFor(x => x.UploadFile, new { @class = "form-control", @id = "txtUploadFile", @type = "file", @readonly = true })
+                <a href="#" class="btn btn-sm btn-outline-secondary" id="btnSlipView"> <i class="icon-copy fa fa-eye" aria-hidden="true" style="font-size:20px;"></i> View Report</a>
+                @Html.HiddenFor(x => x.FILE_PATH, new { @id = "hdnFilePath" })
+            </div>
+        </div>
+    </div>
+    
+<div class="form-group row">
+    <label class="col-sm-12 col-md-2">Tested By</label>
+    <div class="col-sm-12 col-md-4">
+        : @Model.TESTED_BY
+    </div>
+    <label class="col-sm-12 col-md-2">Checked By</label>
+    <div class="col-sm-12 col-md-4">
+        : @Model.QC_INCHARGE
+    </div>
+</div>
+      <div class="modal fade bs-example-modal-lg" id="DocModal" tabindex="-1" role="dialog" aria-labelledby="DocModalLabel" aria-hidden="true" style="width:100%;padding:0px;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myLargeModalLabel">View Document</h4>
+                <button type="button" class="close" aria-label="Close" id="btnDocPopupClose">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" id="DocBody" style="padding-right: 0px; margin-right: 0px; max-height: 500px; overflow:hidden;padding:5px;">
+                <div id="DOC1"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+        $('#btnSlipView').click(function () {
+            var FilePath = $('#hdnFilePath').val();
+
+            $("#DOC1").html('<iframe width="100%" style="border: 0px;" height="450" src="@Url.Action("ShowDocument", "Concrete", new { FilePath = "_FilePath" }) "'.replace("_FilePath", FilePath) + 'class="img-responsive" ></iframe>');
+              $("#DOC1").show();
+            $('#DocBody').slideDown('slow');
+            $('#DocModal').modal('show');
+
+        });
+
+        $('#btnDocPopupClose').click(function () {
+            $('#DocBody').slideUp('slow');
+            $('#DocModal').modal('hide');
+        });
+</script>
